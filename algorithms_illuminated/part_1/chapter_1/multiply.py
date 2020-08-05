@@ -116,6 +116,7 @@ def karatsuba(x, y):
     return karatsuba_(x, y)
 
 def built_in_multiply(x, y):
+    '''Applies the built-in multiplication operator '''
     return x * y
 
 def get_random_input(n):
@@ -131,30 +132,30 @@ def get_setup(algorithm_name, n):
 if __name__ == '__main__':
     # First, correctness tests involving varying length combinations
     algorithms = {'rec_int_mult': rec_int_mult, 'karatsuba': karatsuba}
-    min_digits = 1
-    max_digits = 20
+    # Define 
+    digit_range = (1,20) # Range of number of digits to test
     for algorithm_name, algorithm in algorithms.items():
-        print(f'\nRunning correctness tests for {algorithm_name} with number of digits from {min_digits} to {max_digits}...')
+        print(f'\nRunning correctness tests for {algorithm_name} with number of digits from {digit_range[0]} to {digit_range[1]}...')
         num_tested = 0
         num_passed = 0
         failed_inputs = []
+        # Tests all permutations of digit ranges with built-in operator as reference
         for x_digits in range(min_digits, max_digits):
             for y_digits in range(min_digits, max_digits):
                 x, y = get_random_input(x_digits), get_random_input(y_digits)
                 result = algorithm(x, y)
                 if result == x * y:
-                    num_tested += 1
                     num_passed += 1
                 else:
-                    num_tested += 1
                     failed_inputs.append((x, y))
+                num_tested += 1
         print(f'Results: {num_passed} passed out of {num_tested} tests.')
         if num_tested > num_passed:
-            print(f'Failed inputs:')
+            print(f'Failed input sets:')
             for inputs in failed_inputs:
                 print(inputs)
 
-    # Second, timing tests for various input types and sizes
+    # Second, timing tests for various input sizes
     algorithms['built_in_multiply'] = built_in_multiply
     results = pd.DataFrame(data={'n':[40, 80, 160, 320]})
     for algorithm_name, algorithm in algorithms.items():

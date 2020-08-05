@@ -1,0 +1,1 @@
+Chapter 2 covers the concept of asymptotic (with input size) complexity of algorithms and does not have any programming assignments.

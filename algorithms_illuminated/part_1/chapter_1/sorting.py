@@ -6,6 +6,7 @@ import pandas as pd
 import numpy as np
 import timeit
 
+
 def selection_sort(x):
     '''Sort a list of numbers or strings.
     
@@ -32,6 +33,7 @@ def selection_sort(x):
                 s[suffix_start], s[i] = s[i], s[suffix_start]
         suffix_start += 1
     return s
+
 
 def merge_(left, right):
     '''Merges two sorted lists into a single sorted list.
@@ -70,6 +72,7 @@ def merge_(left, right):
                 break
     return result
 
+
 def merge_sort(x):
     '''Sort a list of numbers or strings.
     
@@ -98,6 +101,7 @@ def merge_sort(x):
     # Merge and return results
     return merge_(left, right)
 
+
 def get_setup(input_type, n):
     '''Get setups for timing tests'''
     s = 'from __main__ import selection_sort, merge_sort; import numpy as np;' 
@@ -110,6 +114,7 @@ def get_setup(input_type, n):
     if input_type == 'shuffled':
         s += f' x=np.arange({n}); np.random.shuffle(x);'
     return s
+
 
 def get_input(input_type, n):
     '''Get inputs for correctness tests'''
@@ -124,6 +129,7 @@ def get_input(input_type, n):
         x = np.arange(n) 
         return np.random.shuffle(x)
 
+
 def check_correctness(input, output):
     '''Checks correctness against built in sorting routine'''
     output = np.array(output)
@@ -133,6 +139,7 @@ def check_correctness(input, output):
         return 'passed'
     else:
         return 'failed'
+
 
 if __name__ == '__main__':
     # First, correctness tests
