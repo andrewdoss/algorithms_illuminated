@@ -127,7 +127,8 @@ def get_input(input_type, n):
         return np.random.choice(x, int(n))
     if input_type == 'shuffled':
         x = np.arange(n) 
-        return np.random.shuffle(x)
+        np.random.shuffle(x)
+        return x
 
 
 def check_correctness(input, output):
