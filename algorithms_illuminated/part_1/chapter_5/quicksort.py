@@ -9,17 +9,21 @@ import timeit
 from collections import defaultdict
 import matplotlib.pyplot as plt
 
+
 def uniform_random_pivot(x, left, right):
     '''Select a pivot point uniformly at random.'''
     return random.randrange(left, right + 1)
+
 
 def first_pivot(x, left, right):
     '''Select first element as pivot.'''
     return left
 
+
 def last_pivot(x, left, right):
     '''Select last element as pivot.'''
     return right
+
 
 def median_of_three_pivot(x, left, right):
     '''Selects median of first, middle, and last element.'''
@@ -38,6 +42,7 @@ def median_of_three_pivot(x, left, right):
         if pivot is None:
             pivot = indices[0]  # If all 3 elements are equal, return first arbitrarily
         return pivot
+
 
 def partition(x, left, right, comparison_counter):
     '''Partitions a sub-list around a pivot.
@@ -66,6 +71,7 @@ def partition(x, left, right, comparison_counter):
             i += 1
     x[left], x[i - 1] = x[i - 1], x[left] # Put pivot where it belongs
     return i - 1 # Report final pivot position
+
 
 def quick_sort(x, left=None, right=None, select_pivot=uniform_random_pivot, comparison_counter=None):
     '''Sort a list of numbers or strings in place.
@@ -118,7 +124,8 @@ def quick_sort(x, left=None, right=None, select_pivot=uniform_random_pivot, comp
     # Recursive calls
     quick_sort(x, left, j - 1, select_pivot, comparison_counter)
     quick_sort(x, j + 1, right, select_pivot, comparison_counter)
-    
+
+
 def selection_sort(x, comparison_counter=None):
     '''Sort a list of numbers or strings.
     
@@ -150,6 +157,7 @@ def selection_sort(x, comparison_counter=None):
         suffix_start += 1
     return s
 
+
 def get_input(input_type, n):
     '''Get inputs for correctness tests'''
     if input_type == 'presorted':
@@ -163,7 +171,8 @@ def get_input(input_type, n):
         x = np.arange(n) 
         np.random.shuffle(x)
         return x
-    
+
+
 def func_wrapper(method, x, comparison_counter=None):
     if method == 'selection_sort':
         return selection_sort(x, comparison_counter=comparison_counter)
@@ -178,6 +187,7 @@ def func_wrapper(method, x, comparison_counter=None):
     else:
         raise ValueError(f"method '{method}' not recognized.")
 
+
 def check_correctness(input_array, output_array):
     '''Checks correctness against built in sorting routine'''
     output_array = np.array(output_array)
@@ -188,7 +198,7 @@ def check_correctness(input_array, output_array):
     else:
         return 'failed'
 
-# Helper to add results for a single problem size to collection
+
 def store_results(n_size, num_trials, trial_results, all_results):
     '''Store comparison operation counts for a single problem size'''
     all_results['n_size'].append(n_size)

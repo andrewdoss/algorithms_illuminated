@@ -6,6 +6,7 @@ import pandas as pd
 import numpy as np
 import timeit
 
+
 def linear_search(x, target):
     '''Returns the index of a target element in a list, if present.
     
@@ -34,6 +35,7 @@ def linear_search(x, target):
             index = i
             break
     return index
+
 
 def binary_search(x, target, lower=None, upper=None):
     '''Returns the index of a target element from a sorted list, if present.
@@ -79,6 +81,7 @@ def binary_search(x, target, lower=None, upper=None):
             index = binary_search(x, target, midpoint + 1, upper)
     return index
 
+
 def built_in_search(x, target):
     '''Wrapper for built-in index operator
     
@@ -90,11 +93,13 @@ def built_in_search(x, target):
         idx = None
     return idx
 
+
 def get_setup(algorithm_name, n, target):
     s = f"from __main__ import {algorithm_name}; import numpy as np;"
     s += f"x = list(range({n}));"
     s += f"target = {target}"
     return s 
+
 
 if __name__ == '__main__':
     # First, correctness tests involving varying length combinations

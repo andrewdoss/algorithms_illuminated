@@ -6,6 +6,7 @@ import pandas as pd
 import numpy as np
 import timeit
 
+
 def brute_count_inversions(x):
     '''Count number of inversions in a sequence using brute force search.
     
@@ -102,10 +103,14 @@ def merge_(left, right, num_inv):
                 break
     return result, num_inv   
 
+
+
 def get_setup(algorithm_name, n):
     s = f"from __main__ import {algorithm_name}; import numpy as np;"
     s += f"x = [digit for digit in np.random.randint(0,{n},{n})];"
     return s 
+
+
 
 if __name__ == '__main__':
     # First, correctness tests involving varying length combinations

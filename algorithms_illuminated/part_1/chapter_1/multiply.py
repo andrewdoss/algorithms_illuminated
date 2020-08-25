@@ -6,6 +6,7 @@ import pandas as pd
 import numpy as np
 import timeit
 
+
 def pad_inputs_(x, y):
     '''Left 0-pad inputs to have equal number of digits.'''
     if len(x) > len(y):
@@ -14,10 +15,12 @@ def pad_inputs_(x, y):
         x = '0' * (len(y) - len(x)) + x
     return x, y
 
+
 def split_input_(s):
     '''Splits input digits in half.'''
     split_point = len(s) // 2
     return s[:split_point], s[split_point:] 
+
 
 def rec_int_mult_(x, y):
     '''Multiply two integers using a recrusive approach.'''
@@ -43,7 +46,8 @@ def rec_int_mult_(x, y):
     if n % 2 == 1: # Handle odd-length strings
         n += 1
     return ac*10**(n) + (ad + bc)*10**(n//2) + bd
-    
+
+
 def rec_int_mult(x, y):
     '''Multiply two integers using a recursive approach.
     
@@ -64,6 +68,7 @@ def rec_int_mult(x, y):
     x = str(x)
     y = str(y)
     return rec_int_mult_(x, y)
+
 
 def karatsuba_(x, y):
     '''Multiply two integers using Karatsuba multiplication.'''
@@ -94,6 +99,7 @@ def karatsuba_(x, y):
         n += 1
     return ac*10**(n) + (adbc)*10**(n//2) + bd    
 
+
 def karatsuba(x, y):
     '''Multiply two integers using Karatsuba multiplication.
     
@@ -115,13 +121,16 @@ def karatsuba(x, y):
     y = str(y)
     return karatsuba_(x, y)
 
+
 def built_in_multiply(x, y):
     '''Applies the built-in multiplication operator '''
     return x * y
 
+
 def get_random_input(n):
     '''Returns random integer with specified number of digits.'''
     return int(''.join([str(digit) for digit in np.random.randint(0,10,n)]))
+
 
 def get_setup(algorithm_name, n):
     s = f"from __main__ import {algorithm_name}; import numpy as np;"
@@ -129,10 +138,10 @@ def get_setup(algorithm_name, n):
     s += f"y = int(''.join([str(digit) for digit in np.random.randint(0,10,{n})]));"
     return s 
 
+
 if __name__ == '__main__':
     # First, correctness tests involving varying length combinations
-    algorithms = {'rec_int_mult': rec_int_mult, 'karatsuba': karatsuba}
-    # Define 
+    algorithms = {'rec_int_mult': rec_int_mult, 'karatsuba': karatsuba} 
     digit_range = (1,20) # Range of number of digits to test
     for algorithm_name, algorithm in algorithms.items():
         print(f'\nRunning correctness tests for {algorithm_name} with number of digits from {digit_range[0]} to {digit_range[1]}...')
