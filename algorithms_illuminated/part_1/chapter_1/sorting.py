@@ -7,7 +7,7 @@ import numpy as np
 import timeit
 
 
-def selection_sort(x):
+def selection_sort(x, comparison_counter=None):
     '''Sort a list of numbers or strings.
     
     Assumes a homogeneous input and that built-in comparison operators apply.
@@ -18,6 +18,8 @@ def selection_sort(x):
     ----------
     x : list
         A list of numbers or strings to be sorted.
+    comparison_count: list
+        An optional list with single int for holding a comparison counter.
     Returns
     -------
     list
@@ -29,6 +31,8 @@ def selection_sort(x):
     suffix_start = 0
     while suffix_start < len(x):
         for i in range(suffix_start, len(s)):
+            if comparison_counter is not None:
+                comparison_counter[0] += 1
             if s[i] < s[suffix_start]:
                 s[suffix_start], s[i] = s[i], s[suffix_start]
         suffix_start += 1
