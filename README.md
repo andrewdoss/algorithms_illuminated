@@ -20,3 +20,9 @@ Practice implementations:
 * Chapter 4 - linear search, binary search
 * Chapter 5 - quicksort
 * Chapter 6 - linear-time selection (of order statistics)
+
+#### Part 1 - Graph Algorithms and Data Structures
+
+Practice implementations:
+* Chapter 7 - no programming exercises (intro to graphs)
+* Chapter 8 - breadth and depth first search, various extensions including finding connected components in a graph, strongly connected components in a digraph and shortest path lengths in a graph with unit lengths (all linear time complexity)
