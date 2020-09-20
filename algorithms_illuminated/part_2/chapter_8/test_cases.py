@@ -84,5 +84,8 @@ scc_search_tests = [
      'solution': [7, 1, 0, 0, 0]},
     {'name': 'scc_search_5',
      'file': 'problem8.10test5.txt',
-     'solution': [6, 3, 2, 1, 0]}            
+     'solution': [6, 3, 2, 1, 0]},
+    {'name': 'challenge_data',
+     'file': 'problem8.10.txt',
+     'solution': [434821, 968, 459, 313, 211]}            
 ]

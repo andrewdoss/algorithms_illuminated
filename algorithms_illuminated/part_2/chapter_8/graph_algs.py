@@ -445,9 +445,4 @@ if __name__ == '__main__':
         graph = Digraph(filepath=test['file'])
         assert graph.top_scc_size(recursive=False) == test['solution'], 'Iterative SCC search failed ' + test['name']
         assert graph.top_scc_size(recursive=True) == test['solution'], 'Recursive SCC search failed ' + test['name']
-    print('All SCC search tests passed.')
-
-    # Last, print solution for challenge problem
-    graph = Digraph(filepath='problem8.10.txt')
-    'Challenge problem solution...'
-    print(graph.top_scc_size(recursive=False))   
+    print('All SCC search tests passed.') 

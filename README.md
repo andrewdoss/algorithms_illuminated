@@ -1,8 +1,8 @@
 ### Algorithms Practice
 
-This repository contains a collection of Python implementations of classic algorithms covered in the Algorithms Illuminated book series (better known as the Stanford Algorithms MOOC). So far, I am building correctness and (where applicable for comparisons) efficiency test cases for each algorithm.
+This repository contains a collection of Python implementations of classic algorithms covered in the Algorithms Illuminated book series (better known as the Stanford Algorithms MOOC). So far, I am building correctness and (where applicable for comparisons) efficiency test cases for each algorithm or pulling test cases from the following repository: https://github.com/beaunus/stanford-algs
 
-I make efforts to disclaim where the implementations are made from pseudo-code in the books and where I have referenced someone else's actual implementation. The purpose of this repository is to practice implementing algorithms, so I generally implement my own solutions before refering to actual implementations. 
+Most of these implementations are derived directly from pseudo-code. 
 
 ### Contents
 
@@ -26,3 +26,6 @@ Practice implementations:
 Practice implementations:
 * Chapter 7 - no programming exercises (intro to graphs)
 * Chapter 8 - breadth and depth first search, various extensions including finding connected components in a graph, strongly connected components in a digraph and shortest path lengths in a graph with unit lengths (all linear time complexity)
+* Chapter 9 - straighforward Dijkstra's algorithm with O(nm) complexity (n=number of vertices, m=number of edges), both baseline and optimized implementations
+
+#### Part 3 - Greedy Algorithms and Dynamic Programming
