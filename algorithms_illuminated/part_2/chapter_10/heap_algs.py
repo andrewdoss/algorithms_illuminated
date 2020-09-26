@@ -2,8 +2,12 @@ import random
 import sys
 import os
 import heapq
+import numpy as np
 sys.path.append(os.path.abspath(os.path.join(os.getcwd(), os.pardir, os.pardir, 'part_1')))
 from chapter_6.selection import rselect
+import timeit
+import pandas as pd
+
 
 class Heap:
     '''A heap data structure with related operations.
@@ -465,7 +469,7 @@ class SelectMedianMaintainer():
             return rselect(self._contents, size // 2 - 1), rselect(self._contents, size // 2)
 
 
-def get_mm_sequence_and_solution(n, seed=None):
+def get_mm_sequence_and_solution(n, seed=None, replacement=False):
     '''Get a sequence and solution for the median maintenance problem.
 
     Parameters
@@ -485,7 +489,10 @@ def get_mm_sequence_and_solution(n, seed=None):
     if seed is not None:
         random.seed(seed)
     seq = [i for i in range(1, n + 1)]
-    seq = random.sample(seq, len(seq))
+    if replacement:
+        seq = random.choices(seq, k=len(seq))
+    else:
+        seq = random.sample(seq, len(seq))
     compilation = []
     solution = []
     for e in seq:
@@ -499,8 +506,32 @@ def get_mm_sequence_and_solution(n, seed=None):
     return seq, solution
 
 
+def test_median_maintainer(mm, seq, sol):
+    '''Helper for testing a median maintainer.
+
+    Parameters
+    ----------
+    mm : object
+        The median mainter object to test.
+    seq : list
+        The sequence to maintain a median for.
+    seq : list
+        The sequence of correct medians at each iteration. 
+        
+    Returns
+    -------
+    bool
+        The success of the median maintainer.
+    '''    
+    for e_in, e_out in zip(seq, sol):
+        mm.add(e_in)
+        if mm.median != e_out:
+            return False
+    return True
+
+
 def heap_sort(x):
-    '''Sort an input using a heap.
+    '''Sort an input using a custom heap.
     
     Assumes ascending order and that built-in comparisons are valid.
     
@@ -516,3 +547,61 @@ def heap_sort(x):
     '''
     heap = Heap(x)
     return [heap.extract_min() for i in range(len(x))]
+
+
+def heap_sort_builtin(x):
+    '''Sort an input using a builtin heap.
+    
+    Assumes ascending order and that built-in comparisons are valid.
+    
+    Parameters
+    ----------
+    x : list
+        The input to be sorted.
+    
+    Returns
+    -------
+    list
+        The input in sorted order.
+    '''
+    heapq.heapify(x)
+    return [heapq.heappop(x) for i in range(len(x))]
+
+
+def get_setup(alg, n, seed, replacement):
+    '''Get setups for timing tests'''
+    s = 'from __main__ import HeapMedianMaintainer, BuiltinHeapMedianMaintainer, SelectMedianMaintainer, get_mm_sequence_and_solution, test_median_maintainer;'
+    s += f' seq, sol = get_mm_sequence_and_solution(n=int({n}), seed={seed}, replacement={replacement});' 
+    if alg == 'custom_heap':
+        s += f' mm = HeapMedianMaintainer();'
+    if alg == 'builtin_heap':
+        s += f' mm = BuiltinHeapMedianMaintainer();'
+    if alg == 'linear_selection':
+        s += f' mm = SelectMedianMaintainer();'
+    return s
+
+
+if __name__ == '__main__':
+    seed = 1
+    n = 10000
+    for replacement in [True, False]:
+        print(f'\nRunning correctness tests with replacement = {replacement}...')
+        # Correctness tests
+        for mm_class in [HeapMedianMaintainer, BuiltinHeapMedianMaintainer, SelectMedianMaintainer]:
+            seq, sol = get_mm_sequence_and_solution(n=n, seed=seed, replacement=replacement)
+            mm = mm_class()
+            assert test_median_maintainer(mm, seq, sol), f'{mm_class} failed correctness with replacement = {replacement}'
+        print(f'\nAll tests passed with replacement = {replacement}.')
+
+    # Timing tests
+    results = pd.DataFrame(data={'n':[1e2, 1e3, 1e4]})
+    seed = 1
+    for replacement in [True, False]:
+        print(f'\nRunning timing tests with replacement = {replacement}...')
+        for alg in ['custom_heap', 'builtin_heap', 'linear_selection']:
+            temp_results = []
+            for n in results['n'].values:
+                temp_results.append(np.round(timeit.timeit('test_median_maintainer(mm, seq, sol)', setup=get_setup(alg, n, seed, replacement), number=1), 4))
+            results[alg] = temp_results
+        print(f'\nCompleted timing tests with replacement = {replacement}...')
+        print(results.head(results.shape[0]))

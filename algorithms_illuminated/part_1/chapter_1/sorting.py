@@ -5,6 +5,7 @@
 import pandas as pd
 import numpy as np
 import timeit
+import heapq
 
 
 def selection_sort(x, comparison_counter=None):
@@ -108,7 +109,7 @@ def merge_sort(x):
 
 def get_setup(input_type, n):
     '''Get setups for timing tests'''
-    s = 'from __main__ import selection_sort, merge_sort; import numpy as np;' 
+    s = 'from __main__ import selection_sort, merge_sort, heap_sort_builtin; import numpy as np;' 
     if input_type == 'presorted':
         s += f' x=np.arange({n});'
     if input_type == 'reversed':
@@ -117,22 +118,23 @@ def get_setup(input_type, n):
         s += f' x=np.arange({n}); x = np.random.choice(x, int({n}));'
     if input_type == 'shuffled':
         s += f' x=np.arange({n}); np.random.shuffle(x);'
+    s += ' x = list(x);'
     return s
 
 
 def get_input(input_type, n):
     '''Get inputs for correctness tests'''
     if input_type == 'presorted':
-        return np.arange(n)
+        return list(np.arange(n))
     if input_type == 'reversed':
-        return np.arange(n, 0, -1)
+        return list(np.arange(n, 0, -1))
     if input_type == 'random':
         x = np.arange(n)
-        return np.random.choice(x, int(n))
+        return list(np.random.choice(x, int(n)))
     if input_type == 'shuffled':
         x = np.arange(n) 
         np.random.shuffle(x)
-        return x
+        return list(x)
 
 
 def check_correctness(input, output):
@@ -146,14 +148,34 @@ def check_correctness(input, output):
         return 'failed'
 
 
+def heap_sort_builtin(x):
+    '''Sort an input using a builtin heap.
+    
+    Assumes ascending order and that built-in comparisons are valid.
+    
+    Parameters
+    ----------
+    x : list
+        The input to be sorted.
+    
+    Returns
+    -------
+    list
+        The input in sorted order.
+    '''
+    heapq.heapify(x)
+    return [heapq.heappop(x) for i in range(len(x))]
+
+
 if __name__ == '__main__':
     # First, correctness tests
     print('Running correctness tests...')
     for input_type in ['presorted', 'reversed', 'random']:
-        for algorithm in [selection_sort, merge_sort]:
+        for algorithm in [selection_sort, merge_sort, heap_sort_builtin]:
             x = get_input(input_type, 1000)
+            x_c = x.copy()
             output = algorithm(x)
-            result = check_correctness(x, output)
+            result = check_correctness(x_c, output)
             print(input_type, algorithm, result)
 
     # Second, timing tests for various input types and sizes
@@ -161,7 +183,7 @@ if __name__ == '__main__':
     print('\nRunning timing tests...')
     for input_type in ['presorted', 'reversed', 'random']:
         print(input_type)
-        for algorithm in ['selection_sort(x)', 'merge_sort(x)', 'sorted(x)']:
+        for algorithm in ['selection_sort(x)', 'merge_sort(x)', 'sorted(x)', 'heap_sort_builtin(x)']:
             temp_results = []
             for n in results['n'].values:
                 temp_results.append(np.round(timeit.timeit(algorithm, setup=get_setup(input_type, n), number=1), 4))
