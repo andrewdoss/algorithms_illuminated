@@ -499,7 +499,7 @@ def get_mm_sequence_and_solution(n, seed=None):
     return seq, solution
 
 
-    def heap_sort(x):
+def heap_sort(x):
     '''Sort an input using a heap.
     
     Assumes ascending order and that built-in comparisons are valid.

@@ -17,14 +17,24 @@ def rselect(x, n, left=None, right=None):
     
     The list is assumed to contain data that works with built-in comparison operators. 
     
-    Args:
-        x (list) : A list that contains the sub-list with pivot as first element.
-        n (int): The order statistic to select using 0-based indexing.
+    Parameters
+    ----------
+    x : list
+        The list to search for an order statistic.
+    n : int 
+        The order statistic to select using 0-based indexing.
+    left : int
+        The starting index for the sub-list for the current call.
+    right : int
+        The ending index for the sub-list for the current call.
         
-    Returns:
-        object : The selected order statistic.
+    Returns
+    -------
+    object : 
+        The selected order statistic.
         
-    Raises:
+    Raises
+    ------
         ValueError: If `n` is too large for `x`.
         ValueError: If `n` is negative.
     '''
@@ -59,14 +69,21 @@ def sort_select(x, n, sort_func=merge_sort, inplace=False):
     
     The list is assumed to contain data that works with built-in comparison operators. 
     
-    Args:
-        x (list) : A list that contains the sub-list with pivot as first element.
-        n (int) : The order statistic to select.
-        sort_func (func) : The sorting function to use.
-        inplace (bool) : Flag indicating whether sorting method sorts in-place.
+    Parameters
+    ----------
+    x : list
+        A list that contains the sub-list with pivot as first element.
+    n : int 
+        The order statistic to select.
+    sort_func : func
+        The sorting function to use.
+    inplace : bool
+        Flag indicating whether sorting method sorts in-place.
     
-    Returns:
-        obj : The selected order statistic.
+    Returns
+    -------
+    obj
+        The selected order statistic.
     '''
     if inplace:
         sort_func(x)

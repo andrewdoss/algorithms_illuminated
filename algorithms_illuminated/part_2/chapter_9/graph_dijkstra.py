@@ -8,6 +8,11 @@ from collections import defaultdict
 import timeit
 import numpy as np
 from test_cases import *
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.getcwd(), os.pardir)))
+from chapter_10.heap_algs import Heap
+import heapq
 
 
 class DigraphDijkstra:
@@ -145,8 +150,8 @@ class DigraphDijkstra:
             A mapping from all vertices to their distance from start_vertex.
         '''
         distances = {start_vertex: 0}
-        crossing = {start_vertex: self.adj_list[start_vertex]}
-        i = 0
+        crossing = {start_vertex: list(self.adj_list[start_vertex])}
+
         while True:
             min_length = float('inf')
             next_vertex = None
@@ -169,7 +174,114 @@ class DigraphDijkstra:
             else:
                 break
         return distances
+    
+    def dijkstra_heap(self, start_vertex):
+        '''Compute shortest path distances from a starting vertex to all other vertices.
+        
+        Assumes all edge lengths are non-negative.
+        
+        This is a more optimized implementation that maintains crossing edges in a heap.
+        
+        I've decided to filter edges on insertion or extraction from the heap, rather than
+        maintaining a strict crossing edge invariant. This is simpler to implement and
+        has the same time complexity, but may require more memory than, proactively
+        deleting edges when they no longer cross to unxplored vertices.
+        
+        Paramaters
+        ----------
+        start_vertex : int
+            The index of the starting vertex for the search.
+            
+        Returns
+        -------
+        distances : dict
+            A mapping from all vertices to their distance from start_vertex.
+        '''
+        
+        def add_crossing_edges(vertex, adj_list, dist, crossing_heap):
+            '''Helper for adding new crossing edges.'''
+            for edge in adj_list[vertex]:
+                if edge[0] not in dist: # Filter edges to previously explored vertices
+                    crossing_heap.insert((dist[vertex] + edge[1], vertex, edge[0]))
+            return None
+        
+        # Initialize
+        distances = {start_vertex: 0}
+        heap = Heap()
+        add_crossing_edges(start_vertex, self.adj_list, distances, heap)
 
+        while True:
+            # Extract minimum distance edges until all edges exhausted or a crossing edge is found
+            while True:
+                min_edge = heap.extract_min()
+                if min_edge is None or min_edge[2] not in distances:
+                    break
+            # End search if no edge returned
+            if min_edge is None:
+                break
+            # Add selected edge to distances
+            distances[min_edge[2]] = min_edge[0]
+            # Add new crossing edges to the heap
+            add_crossing_edges(min_edge[2], self.adj_list, distances, heap)
+            
+        return distances
+
+    
+    def dijkstra_heap_builtin(self, start_vertex):
+        '''Compute shortest path distances from a starting vertex to all other vertices.
+        
+        Assumes all edge lengths are non-negative.
+        
+        This is a more optimized implementation that maintains crossing edges in a heap.
+        
+        I've decided to filter edges on insertion or extraction from the heap, rather than
+        maintaining a strict crossing edge invariant. This is simpler to implement and
+        has the same time complexity, but may require more memory than, proactively
+        deleting edges when they no longer cross to unxplored vertices.
+        
+        Paramaters
+        ----------
+        start_vertex : int
+            The index of the starting vertex for the search.
+            
+        Returns
+        -------
+        distances : dict
+            A mapping from all vertices to their distance from start_vertex.
+        '''
+        
+        def add_crossing_edges(vertex, adj_list, dist, crossing_heap):
+            '''Helper for adding new crossing edges.'''
+            for edge in adj_list[vertex]:
+                if edge[0] not in dist: # Filter edges to previously explored vertices
+                    heapq.heappush(crossing_heap, (dist[vertex] + edge[1], vertex, edge[0]))
+            return None
+        
+        # Initialize
+        distances = {start_vertex: 0}
+        heap = []
+        add_crossing_edges(start_vertex, self.adj_list, distances, heap)
+
+        while True:
+            # Extract minimum distance edges until all edges exhausted or a crossing edge is found
+            while True:
+                try:
+                    min_edge = heapq.heappop(heap)
+                except IndexError:
+                    min_edge = None
+                    break
+                if min_edge[2] not in distances:
+                    break
+            # End search if no edge returned
+            if min_edge is None:
+                break
+            # Add selected edge to distances
+            distances[min_edge[2]] = min_edge[0]
+            # Add new crossing edges to the heap
+            add_crossing_edges(min_edge[2], self.adj_list, distances, heap)
+            
+        return distances
+    
 
 def check_distances(distances, solution_file, test_vertices=[7,37,59,82,99,115,133,165,188,197]):
     '''Helper for testing output against distances.
@@ -198,19 +310,24 @@ def get_setup(test_name):
 
 
 if __name__ == '__main__':
-    # First, check correctness and approximate runtime of various test cases
+    # First, check correctness of various test cases
+    print('Starting correctness tests...')
     for test in dijkstra_tests:
         dg = DigraphDijkstra(f"tests/input_{test['name']}.txt")
         baseline_distances = dg.dijkstra_baseline(test['start_vertex'])
         optimized_distances = dg.dijkstra_optimized(test['start_vertex'])
+        custom_heap_distances = dg.dijkstra_heap(test['start_vertex'])
+        builtin_heap_distances = dg.dijkstra_heap_builtin(test['start_vertex'])
         assert check_distances(baseline_distances, f"tests/output_{test['name']}.txt"), f"Baseline failed {test['name']}"
-        assert check_distances(optimized_distances, f"tests/output_{test['name']}.txt"), f"Optimized failed {test['name']}"  
+        assert check_distances(optimized_distances, f"tests/output_{test['name']}.txt"), f"Optimized failed {test['name']}"
+        assert check_distances(custom_heap_distances, f"tests/output_{test['name']}.txt"), f"Custom Heap failed {test['name']}" 
+        assert check_distances(builtin_heap_distances, f"tests/output_{test['name']}.txt"), f"Builtin Heap failed {test['name']}"   
     print('All correctness tests passed.\n')
 
     # Second, timing tests for problems of increasing size
     results = {}
     for problem in ['random_1_4', 'problem9.8', 'random_25_256']:
-        for algorithm in ['dg.dijkstra_baseline(1)', 'dg.dijkstra_optimized(1)']:
+        for algorithm in ['dg.dijkstra_baseline(1)', 'dg.dijkstra_optimized(1)', 'dg.dijkstra_heap(1)', 'dg.dijkstra_heap_builtin(1)']:
             results[algorithm] = np.round(timeit.timeit(algorithm, setup=get_setup(problem), number=1), 4)
         print(f'Results for {problem}:\n', results, '\n')
     print('Timing tests complete.')
