@@ -1,5 +1,8 @@
 import sys
 import os
+import pandas as pd
+import numpy as np
+import timeit
 sys.path.append(os.path.abspath(os.path.join(os.getcwd(), os.pardir)))
 from chapter_10.heap_algs import BuiltinHeapMedianMaintainer, SelectMedianMaintainer, get_mm_sequence_and_solution, test_median_maintainer
 
@@ -349,7 +352,8 @@ class Node():
                 f'parent={self._parent.value if self._parent is not None else None}, '
                 f'left_child={self._left_child.value if self._left_child is not None else None}, '
                 f'right_child={self._right_child.value if self._right_child is not None else None})')
-    
+
+
 class BSTMedianMaintainer():
     '''A class that maintains the median of a sequence of positive integers.
     
@@ -385,4 +389,72 @@ class BSTMedianMaintainer():
         if size % 2 == 1:
             return self._tree.select((size // 2) + 1).value
         else:
-            return self._tree.select(size // 2).value, self._tree.select((size // 2) + 1).value  
+            return self._tree.select(size // 2).value
+
+
+def read_textfile(filename):
+    '''Read test dataset and return as a list.'''
+    seq = []
+    with open(filename) as f:
+        for line in f:
+           seq.append(int(line.replace('\n','')))
+    return seq
+
+
+def get_setup(alg, n, seed, replacement):
+    '''Get setups for timing tests'''
+    s = 'from __main__ import BuiltinHeapMedianMaintainer, SelectMedianMaintainer, BSTMedianMaintainer, get_mm_sequence_and_solution, test_median_maintainer;'
+    s += f' seq, sol = get_mm_sequence_and_solution(n=int({n}), seed={seed}, replacement={replacement});' 
+    if alg == 'builtin_heap':
+        s += f' mm = BuiltinHeapMedianMaintainer();'
+    if alg == 'linear_selection':
+        s += f' mm = SelectMedianMaintainer();'
+    if alg == 'binary_search_tree':
+        s += f' mm = BSTMedianMaintainer();'
+    return s
+
+
+def test_km_sum(mm, seq, solution):
+    '''Helper for testing sum of k-medians'''
+    medians = []
+    for e in seq:
+        mm.add(e)
+        medians.append(mm.median)
+    return str(sum(medians))[-4:] == solution
+
+
+if __name__ == '__main__':
+    seed = 1
+    n = 10000
+    for replacement in [True, False]:
+        print(f'\nRunning correctness tests with replacement = {replacement}...')
+        # Random correctness tests
+        mm_classes = [BuiltinHeapMedianMaintainer, SelectMedianMaintainer, BSTMedianMaintainer]
+        for mm_class in mm_classes:
+            seq, sol = get_mm_sequence_and_solution(n=n, seed=seed, replacement=replacement)
+            mm = mm_class()
+            assert test_median_maintainer(mm, seq, sol), f'{mm_class} failed correctness with replacement = {replacement}'
+        print(f'\nAll tests passed with replacement = {replacement}.')
+
+        # Provided correctness tests
+        test_cases = [('problem11.3test.txt', '9335'), ('problem11.3.txt', '1213')]
+        for filename, solution in test_cases:
+            print(f'\nRunning correctness tests with {filename}...')
+            seq = read_textfile(filename)
+            for mm_class in mm_classes:
+                mm = mm_class()
+                assert test_km_sum(mm, seq, solution), f'{mm_class} failed correctness with {filename}.'
+            print(f'\nAll tests passed with {filename}.')
+
+    # Timing tests
+    results = pd.DataFrame(data={'n':[1e2, 1e3, 1e4]})
+    seed = 1
+    for replacement in [True, False]:
+        print(f'\nRunning timing tests with replacement = {replacement}...')
+        for alg in ['builtin_heap', 'linear_selection', 'binary_search_tree']:
+            temp_results = []
+            for n in results['n'].values:
+                temp_results.append(np.round(timeit.timeit('test_median_maintainer(mm, seq, sol)', setup=get_setup(alg, n, seed, replacement), number=1), 4))
+            results[alg] = temp_results
+        print(f'\nCompleted timing tests with replacement = {replacement}...')
+        print(results.head(results.shape[0]))  

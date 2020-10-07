@@ -350,7 +350,11 @@ class HeapMedianMaintainer():
         if self._max_heap.size == 0:
             self._max_heap.insert(-1 * x)
         elif self._min_heap.size == 0:
-            self._min_heap.insert(x)
+            if x < -1 * self._max_heap.peek: # Check for rebalancing
+                self._min_heap.insert(-1 * self._max_heap.extract_min()) 
+                self._max_heap.insert(-1 * x)
+            else:
+                self._min_heap.insert(x)
         elif x > -1 * self._max_heap.peek:
             self._min_heap.insert(x)
             # Rebalance if needed
@@ -367,7 +371,7 @@ class HeapMedianMaintainer():
     def median(self):
         '''Returns the current median.'''
         if self._max_heap.size == self._min_heap.size:
-            return tuple(sorted((-1 * self._max_heap.peek, self._min_heap.peek)))
+            return sorted((-1 * self._max_heap.peek, self._min_heap.peek))[0]
         elif self._max_heap.size > self._min_heap.size:
             return -1 * self._max_heap.peek
         else: 
@@ -407,7 +411,11 @@ class BuiltinHeapMedianMaintainer():
         if len(self._max_heap) == 0:
             heapq.heappush(self._max_heap, -1 * x)
         elif len(self._min_heap) == 0:
-            heapq.heappush(self._min_heap, x)
+            if x < -1 * self._max_heap[0]: # Check for rebalancing 
+                heapq.heappush(self._min_heap, -1 * heapq.heappop(self._max_heap))
+                heapq.heappush(self._max_heap, -1 * x)
+            else:
+                heapq.heappush(self._min_heap, x)
         elif x > -1 * self._max_heap[0]:
             heapq.heappush(self._min_heap, x)
             # Rebalance if needed
@@ -424,7 +432,7 @@ class BuiltinHeapMedianMaintainer():
     def median(self):
         '''Returns the current median.'''
         if len(self._max_heap) == len(self._min_heap):
-            return tuple(sorted((-1 * self._max_heap[0], self._min_heap[0])))
+            return sorted((-1 * self._max_heap[0], self._min_heap[0]))[0]
         elif len(self._max_heap) > len(self._min_heap):
             return -1 * self._max_heap[0]
         else: 
@@ -466,7 +474,7 @@ class SelectMedianMaintainer():
         if size % 2 == 1:
             return rselect(self._contents, size // 2)
         else:
-            return rselect(self._contents, size // 2 - 1), rselect(self._contents, size // 2)
+            return rselect(self._contents, size // 2 - 1)
 
 
 def get_mm_sequence_and_solution(n, seed=None, replacement=False):
@@ -500,7 +508,7 @@ def get_mm_sequence_and_solution(n, seed=None, replacement=False):
         compilation.sort()
         length = len(compilation)
         if length % 2 == 0:
-            solution.append((compilation[(length // 2) - 1], compilation[length // 2]))
+            solution.append(compilation[(length // 2) - 1])
         else:
             solution.append(compilation[length // 2])
     return seq, solution

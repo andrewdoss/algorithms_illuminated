@@ -1,4 +1,6 @@
 import time
+
+
 def read_textfile(filename):
     '''Read test dataset and return as a list.'''
     seq = []
@@ -32,7 +34,16 @@ def two_sum(seq, start_range, stop_range):
         present = present.union(temp_present)
         targets = targets.difference(temp_present)
         i += 1
-        if i % 10000 == 0:
-            print(f'{i} elements checked, last 10,000 in {time.time() - start:.2f}, {len(targets)} remain.')
+        if i % 100000 == 0:
+            print(f'{i} elements checked, last 10,000 in {time.time() - start:.2f} seconds, {len(targets)} remain.')
             start = time.time()
     return len(present)
+
+
+if __name__ == '__main__':
+    test_cases = [('problem12.4test.txt', 3, 10, 8), ('problem12.4.txt', -10000, 10000, 427)]
+    for filename, start, stop, solution in test_cases:
+        print(f'Starting {filename} test...')
+        seq = read_textfile(filename)
+        assert two_sum(seq, start, stop) == solution, f'Failed {filename} test.'
+        print(f'Passed {filename} test.')
