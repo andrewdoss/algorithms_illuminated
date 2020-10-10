@@ -36,6 +36,7 @@ def weighted_sum(schedule):
         score += job[0] * completion_time
     return score
 
+
 if __name__ == '__main__':
     test_jobs = read_input('problem13.4test.txt')
     greedy_diff_sched_test = greedy_diff(test_jobs)
