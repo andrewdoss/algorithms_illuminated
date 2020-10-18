@@ -194,10 +194,6 @@ class Heap:
         else:
             return None        
     
-    def find_min(self):
-        '''Peak at the minimum element without removing it from the heap.'''
-        return self._contents[0]
-    
     def _bubble_down(self, idx):
         '''Swap an element downwards until the heap property is restored.
         
