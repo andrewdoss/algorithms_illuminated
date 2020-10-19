@@ -231,7 +231,7 @@ if __name__ == '__main__':
 
     # Second, test knapsack implementations for correctness and operation count
     test_cases = [('problem16.7test.txt', 10000, 100, 2493893),
-                  ('problem16.7.txt', 2000000, 2000, 11475230)]
+                  ('problem16.7.txt', 2000000, 2000, 4243395)]
     # I have a tower machine w/ 32 GB of RAM, and I was able to compare
     # the very costly iterative implementation on the larger problem.
     # If you want to run it, comment out the line below but be warned you
@@ -240,6 +240,9 @@ if __name__ == '__main__':
     # cache still becomes intractable at a certain problem size, at that point
     # it's better to use the recursive implementation with dictionary caching of
     # only the subset of relevent unique subproblems.  
+    # For the small case, the iterative approach does about 1.18x more work.
+    # For the large case, the iterative approach does about 376x more work and 
+    # runs ~50 times slower with this implementation.
     test_cases = [('problem16.7test.txt', 10000, 100, 2493893)]
 
     print(f'Starting knapsack test cases...this will take a while.')
