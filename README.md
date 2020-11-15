@@ -54,3 +54,12 @@ Practice implementations:
 
 #### Part 4 - Algorithms for NP-Hard Problems
 
+Key concepts:
+* NP-hard problems can still be attacked but usually requires compromise on accuracy, efficiency, or generality
+* Local search and MIP can be effective for approximate and exact solutions, both require careful work to formulate the problem for the algorithm
+* Dynamic programming can help us to a point, with some NP-hard problems
+* Problems can be proven NP-hard by showing that a known NP-hard problem reduced to the problem, mostly a theoretical consideration but can be helpful to know when facing a problem in practice (e.g. warehouse slotting in my past work)
+
+* Chapter 19 - exhaustive search for exact solution to traveling salesman problem
+* Chapter 20 - greedy (nearest-neighbor) for TSP, 2-sum local search for TSP
+* Chapter 21 - inefficient exact solutions, Bellman dynamic programming for TSP, a non-commerical MIP for TSP

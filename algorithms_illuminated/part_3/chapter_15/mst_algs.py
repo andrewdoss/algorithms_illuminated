@@ -184,7 +184,7 @@ class UnionFind():
         """Union the connected components of two vertices."""
         # Find root parents, if not provided in call
         if root_parents is None:
-            for idx, (v, rp) in enumerate(zip([v1, v2], root_parents)):
+            for idx, (v, _) in enumerate(zip([v1, v2], root_parents)):
                 root_parents[idx] = self.find(v)
         # Union the two connected components
         indices = [self._idx_map[rp] for rp in root_parents]
