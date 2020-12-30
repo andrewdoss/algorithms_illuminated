@@ -1,4 +1,4 @@
-### Algorithms Practice
+### Algorithms Illuminated Implementations
 
 This repository contains a collection of Python implementations of classic algorithms covered in the Algorithms Illuminated book series (better known as the Stanford Algorithms MOOC). So far, I am building correctness and (where applicable for comparisons) efficiency test cases for each algorithm or pulling test cases from the following repository: https://github.com/beaunus/stanford-algs
 
